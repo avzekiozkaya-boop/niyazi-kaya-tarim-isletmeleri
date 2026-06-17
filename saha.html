@@ -24,6 +24,12 @@
   .kisi button{margin-left:auto;background:none;border:none;color:#1976D2;font-weight:700;font-size:13px}
   .a2hs{background:#E3F2FD;border:1px solid #90CAF9;color:#0D47A1;border-radius:10px;padding:9px 12px;margin-bottom:12px;font-size:12px;display:flex;gap:8px;align-items:center}
   .a2hs button{margin-left:auto;background:none;border:none;color:#0D47A1;font-size:16px}
+  .tiptabs{display:flex;gap:8px;margin-bottom:12px}
+  .tiptab{flex:1;text-align:center;padding:12px 8px;border-radius:11px;border:1.5px solid #d8d8d8;background:#fff;font-weight:800;font-size:15px;color:#555}
+  .tiptab .n{display:inline-block;min-width:20px;margin-left:4px;padding:0 6px;border-radius:20px;background:#eee;color:#555;font-size:12px}
+  .tiptab.g.act{background:#1565C0;color:#fff;border-color:#1565C0}
+  .tiptab.y.act{background:#6A1B9A;color:#fff;border-color:#6A1B9A}
+  .tiptab.act .n{background:rgba(255,255,255,.25);color:#fff}
   .gun{margin:18px 0 8px;font-size:15px;font-weight:900;color:#333;display:flex;align-items:center;gap:8px}
   .gun .cizgi{flex:1;height:1px;background:#ddd}
   .bahce{font-size:13px;font-weight:800;color:var(--gd);margin:10px 0 4px;padding-left:2px}
@@ -87,6 +93,7 @@
     📲 Bunu uygulama gibi kullan: tarayıcı menüsünden <b>"Ana Ekrana Ekle"</b>.
     <button onclick="this.parentNode.style.display='none'">×</button>
   </div>
+  <div id="tipTabs"></div>
   <div id="liste"></div>
 </div>
 
@@ -97,6 +104,10 @@
     <div class="fld">
       <label>Uygulama tarihi</label>
       <input type="date" id="shTarih">
+    </div>
+    <div class="fld" id="shDepoFld" style="display:none">
+      <label>Kaç depo (tank) uyguladın?</label>
+      <input type="number" id="shDepo" min="0" step="1" inputmode="numeric">
     </div>
     <div class="fld">
       <label>Fotoğraf (isteğe bağlı)</label>
@@ -138,6 +149,8 @@ const params=new URLSearchParams(location.search);
 const BAHCE=params.get('b')||'';   // opsiyonel: tek bahçe filtresi (geriye dönük uyumluluk)
 let GOREVLER=[];
 let aktifId=null, fotoFile=null;
+let aktifTip='gubre', _tipInit=false;   // saha ekranı sekmesi: gubre / yaprak
+function tipSec(t){ aktifTip=t; ciz(); }
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function bugun(){return new Date().toISOString().slice(0,10);}
@@ -192,12 +205,29 @@ async function yukle(elle){
 
 function ciz(){
   kisiGoster();
-  const bekleyen=GOREVLER.filter(g=>g.durum!=='uygulandi');
-  const yapilan=GOREVLER.filter(g=>g.durum==='uygulandi');
-  document.getElementById('altbaslik').textContent=bekleyen.length+' bekleyen iş'+(yapilan.length?(' · '+yapilan.length+' tamamlandı'):'');
+  const tipi=g=>(g.tip==='yaprak'?'yaprak':'gubre');
+  const gubreN=GOREVLER.filter(g=>g.durum!=='uygulandi'&&tipi(g)==='gubre').length;
+  const yaprakN=GOREVLER.filter(g=>g.durum!=='uygulandi'&&tipi(g)==='yaprak').length;
+  // ilk açılışta bekleyeni olan sekmeyi seç
+  if(!_tipInit){ _tipInit=true; aktifTip=(gubreN===0&&yaprakN>0)?'yaprak':'gubre'; }
+
+  // sekmeler
+  document.getElementById('tipTabs').innerHTML = GOREVLER.length?(
+    '<div class="tiptabs">'
+    +'<button class="tiptab g'+(aktifTip==='gubre'?' act':'')+'" onclick="tipSec(\'gubre\')">💊 Gübre <span class="n">'+gubreN+'</span></button>'
+    +'<button class="tiptab y'+(aktifTip==='yaprak'?' act':'')+'" onclick="tipSec(\'yaprak\')">🌿 Yaprak <span class="n">'+yaprakN+'</span></button>'
+    +'</div>'):'';
+
+  const bekleyen=GOREVLER.filter(g=>g.durum!=='uygulandi'&&tipi(g)===aktifTip);
+  const yapilan=GOREVLER.filter(g=>g.durum==='uygulandi'&&tipi(g)===aktifTip);
+  document.getElementById('altbaslik').textContent=(aktifTip==='yaprak'?'🌿 Yaprak':'💊 Gübre')+' · '+bekleyen.length+' bekleyen'+(yapilan.length?(' · '+yapilan.length+' tamamlandı'):'');
 
   if(!GOREVLER.length){
     document.getElementById('liste').innerHTML='<div class="empty"><div class="ico">🌱</div><div>Şu an gönderilmiş görev yok.<br>Yeni iş gelince burada görünür.</div></div>';
+    return;
+  }
+  if(!bekleyen.length && !yapilan.length){
+    document.getElementById('liste').innerHTML='<div class="empty"><div class="ico">✅</div><div>Bu kategoride iş yok.<br>Üstteki diğer sekmeye bak.</div></div>';
     return;
   }
 
@@ -224,19 +254,25 @@ function ciz(){
 
 function kart(g){
   const done=g.durum==='uygulandi';
+  const yaprak=g.tip==='yaprak';
   const kalemler=(g.kalemler||[]).map(k=>{
-    const pkt=(k.paket!=null)
-      ? '<span class="pkt">'+temizSayi(k.paket)+' paket<br><small>('+temizSayi(k.miktar)+' '+esc(k.birim)+')</small></span>'
-      : '<span class="pkt">'+temizSayi(k.miktar)+' <small>'+esc(k.birim)+'</small></span>';
-    return '<div class="kalem"><span class="ad">'+esc(k.urun)+'</span>'+pkt+'</div>';
+    let pkt;
+    if(yaprak||k.perDepo){ pkt='<span class="pkt">'+temizSayi(k.miktar)+' <small>'+esc(k.birim)+'/depo</small></span>'; }
+    else if(k.paket!=null){ pkt='<span class="pkt">'+temizSayi(k.paket)+' paket<br><small>('+temizSayi(k.miktar)+' '+esc(k.birim)+')</small></span>'; }
+    else{ pkt='<span class="pkt">'+temizSayi(k.miktar)+' <small>'+esc(k.birim)+'</small></span>'; }
+    const hedef=k.hedef?'<br><small style="color:#888;font-weight:600">'+esc(k.hedef)+'</small>':'';
+    return '<div class="kalem"><span class="ad">'+esc(k.urun)+hedef+'</span>'+pkt+'</div>';
   }).join('');
-  const tipEt=g.tip==='yaprak'?'<span class="tip" style="background:#6A1B9A">🌿 Yaprak</span>':'<span class="tip">💊 Gübre</span>';
+  const tipEt=yaprak?'<span class="tip" style="background:#6A1B9A">🌿 Yaprak</span>':'<span class="tip">💊 Gübre</span>';
+  const depoBilgi=(yaprak&&!done)?'<div class="not" style="background:#EDE7F6;color:#4527A0">💧 Miktarlar <b>her depo (tank)</b> için · Önerilen: <b>'+esc(g.period||'?')+' depo</b></div>':'';
+  const depoDone=(yaprak&&done&&g.uyg_kalemler&&g.uyg_kalemler[0]&&g.uyg_kalemler[0].depo)?(' · '+g.uyg_kalemler[0].depo+' depo'):'';
   return '<div class="card'+(done?' done':'')+'">'
     +'<div class="top">'+tipEt+(g.parsel?'<span class="parsel">'+esc(g.parsel)+'</span>':'')+'</div>'
     +'<div class="kalemler">'+kalemler+'</div>'
+    +depoBilgi
     +(g.not_metni?'<div class="not">📝 '+esc(g.not_metni)+'</div>':'')
     +(done
-       ? '<div class="done-info">✅ Uygulandı — '+fmtT(g.uyg_tarih)+(g.uygulayan?(' · '+esc(g.uygulayan)):'')
+       ? '<div class="done-info">✅ Uygulandı — '+fmtT(g.uyg_tarih)+depoDone+(g.uygulayan?(' · '+esc(g.uygulayan)):'')
           +(g.uyg_not?('<br>📝 '+esc(g.uyg_not)):'')
           +(g.foto_url?('<br><a href="'+esc(g.foto_url)+'" target="_blank">📷 Fotoğrafı gör</a>'):'')+'</div>'
        : '<div class="btnrow"><button class="btn-uygula" onclick="uygulaAc(\''+g.id+'\')">✅ Uyguladım</button></div>')
@@ -248,8 +284,11 @@ function uygulaAc(id){
   if(!kisiSor(false)){toast('Önce adını gir');return;}
   aktifId=id;fotoFile=null;
   const g=GOREVLER.find(x=>x.id===id);
-  document.getElementById('shDesc').textContent='🌳 '+(g.bahce_ad||'')+' · 📅 '+fmtT(g.plan_tarih)+(g.parsel?(' · '+g.parsel):'');
+  document.getElementById('shDesc').textContent='🌳 '+(g.bahce_ad||'')+' · 📅 '+fmtT(g.plan_tarih)+(g.parsel?(' · '+g.parsel):'')+(g.tip==='yaprak'?' · 🌿 Yaprak':'');
   document.getElementById('shTarih').value=bugun();
+  const yaprak=g.tip==='yaprak';
+  document.getElementById('shDepoFld').style.display=yaprak?'block':'none';
+  if(yaprak) document.getElementById('shDepo').value=g.period||'';
   document.getElementById('shNot').value='';
   document.getElementById('shFoto').value='';
   document.getElementById('shFotoOnizleme').innerHTML='';
@@ -278,6 +317,9 @@ async function uygulamayiKaydet(){
     const govde={durum:'uygulandi',uyg_tarih:document.getElementById('shTarih').value||bugun(),
       uyg_not:document.getElementById('shNot').value.trim(),uygulayan:kisiGetir(),
       foto_url:fotoUrl,guncelleme:new Date().toISOString()};
+    if((GOREVLER.find(x=>x.id===aktifId)||{}).tip==='yaprak'){
+      govde.uyg_kalemler=[{depo:Number((document.getElementById('shDepo')||{}).value)||0}];
+    }
     const res=await fetch(SAHA_URL+'/rest/v1/gorevler?id=eq.'+encodeURIComponent(aktifId),{
       method:'PATCH',headers:Object.assign({'Content-Type':'application/json',Prefer:'return=minimal'},HDR),
       body:JSON.stringify(govde)});
