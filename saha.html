@@ -70,8 +70,13 @@
 </head>
 <body>
 <header>
-  <h1 id="baslik">🌳 Bahçe Görevleri</h1>
-  <div class="sub" id="altbaslik">Yükleniyor…</div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="flex:1;min-width:0">
+      <h1 id="baslik">🌳 Bahçe Görevleri</h1>
+      <div class="sub" id="altbaslik">Yükleniyor…</div>
+    </div>
+    <button id="yenileBtn" onclick="yukle(true)" title="Yenile" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-size:20px;line-height:1;border-radius:10px;padding:9px 13px;flex:none">↻</button>
+  </div>
 </header>
 <div class="wrap">
   <div class="kisi" id="kisiKutu" style="display:none">
@@ -165,7 +170,11 @@ function kisiGoster(){
 }
 
 /* ── Görevleri yükle ── */
-async function yukle(){
+let _yukleniyor=false;
+async function yukle(elle){
+  if(_yukleniyor) return; _yukleniyor=true;
+  const yb=document.getElementById('yenileBtn'); if(yb) yb.textContent='⏳';
+  if(elle){ const a=document.getElementById('altbaslik'); if(a) a.textContent='Yenileniyor…'; }
   try{
     let url=SAHA_URL+'/rest/v1/gorevler?ciftlik=eq.'+SAHA_CIFTLIK+'&order=plan_tarih.asc';
     if(BAHCE) url+='&bahce_id=eq.'+encodeURIComponent(BAHCE);
@@ -175,7 +184,9 @@ async function yukle(){
     ciz();
   }catch(e){
     document.getElementById('altbaslik').textContent='Bağlantı hatası';
-    document.getElementById('liste').innerHTML='<div class="empty"><div class="ico">📡</div><div>İnternete bağlanılamadı. Çekince tekrar dene.</div><div style="margin-top:14px"><button class="btn-uygula" style="max-width:200px" onclick="yukle()">↻ Tekrar dene</button></div></div>';
+    document.getElementById('liste').innerHTML='<div class="empty"><div class="ico">📡</div><div>İnternete bağlanılamadı. Çekince tekrar dene.</div><div style="margin-top:14px"><button class="btn-uygula" style="max-width:200px" onclick="yukle(true)">↻ Tekrar dene</button></div></div>';
+  }finally{
+    _yukleniyor=false; const b=document.getElementById('yenileBtn'); if(b) b.textContent='↻';
   }
 }
 
@@ -279,6 +290,9 @@ async function uygulamayiKaydet(){
 
 kisiGoster();
 yukle();
+// uygulama öne gelince / sekme görünür olunca otomatik yenile (iptal edilenler düşer, yeni işler gelir)
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) yukle(); });
+window.addEventListener('focus',()=>yukle());
 </script>
 </body>
 </html>
