@@ -3,43 +3,54 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Saha Görevleri</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bahçe Görevleri">
+<meta name="theme-color" content="#2E7D32">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Crect width='180' height='180' rx='34' fill='%232E7D32'/%3E%3Ctext x='50%25' y='54%25' font-size='80' text-anchor='middle' dominant-baseline='central' fill='white' font-family='Arial' font-weight='bold'%3ENK%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' rx='12' fill='%232E7D32'/%3E%3Ctext x='50%25' y='56%25' font-size='30' text-anchor='middle' dominant-baseline='central' fill='white' font-family='Arial' font-weight='bold'%3ENK%3C/text%3E%3C/svg%3E">
+<title>Niyazi Kaya Bahçe Görevleri</title>
 <style>
-  :root{--gd:#2E7D32;--gr:#777;--bg:#f4f6f4;--bek:#FFFDE7;--ok:#E8F5E9;}
+  :root{--gd:#2E7D32;--gr:#777;--bg:#f4f6f4;}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:#222}
   header{background:var(--gd);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.15)}
   header h1{margin:0;font-size:18px;font-weight:800}
   header .sub{font-size:12px;opacity:.9;margin-top:2px}
-  .wrap{padding:12px;max-width:640px;margin:0 auto}
-  .kisi{background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-size:13px;border:1px solid #e2e2e2}
+  .wrap{padding:12px;max-width:680px;margin:0 auto}
+  .kisi{background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:13px;border:1px solid #e2e2e2}
   .kisi b{color:var(--gd)}
   .kisi button{margin-left:auto;background:none;border:none;color:#1976D2;font-weight:700;font-size:13px}
-  .card{background:#fff;border-radius:12px;border:1px solid #e2e2e2;border-left:6px solid #FBC02D;margin-bottom:12px;overflow:hidden}
-  .card.done{border-left-color:var(--gd);opacity:.7}
-  .card .top{padding:11px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .card .tarih{font-weight:800;font-size:15px;color:#333}
+  .a2hs{background:#E3F2FD;border:1px solid #90CAF9;color:#0D47A1;border-radius:10px;padding:9px 12px;margin-bottom:12px;font-size:12px;display:flex;gap:8px;align-items:center}
+  .a2hs button{margin-left:auto;background:none;border:none;color:#0D47A1;font-size:16px}
+  .gun{margin:18px 0 8px;font-size:15px;font-weight:900;color:#333;display:flex;align-items:center;gap:8px}
+  .gun .cizgi{flex:1;height:1px;background:#ddd}
+  .bahce{font-size:13px;font-weight:800;color:var(--gd);margin:10px 0 4px;padding-left:2px}
+  .card{background:#fff;border-radius:12px;border:1px solid #e2e2e2;border-left:6px solid #FBC02D;margin-bottom:10px;overflow:hidden}
+  .card.done{border-left-color:var(--gd);opacity:.75}
+  .card .top{padding:9px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .card .parsel{font-size:12px;color:#fff;background:#E65100;padding:2px 8px;border-radius:20px}
-  .card .tip{font-size:12px;color:#fff;background:#6A1B9A;padding:2px 8px;border-radius:20px}
-  .kalemler{padding:4px 14px 12px}
+  .card .tip{font-size:11px;color:#fff;background:#1565C0;padding:2px 8px;border-radius:20px}
+  .kalemler{padding:2px 14px 12px}
   .kalem{display:flex;align-items:baseline;gap:8px;padding:7px 0;border-top:1px dashed #eee}
   .kalem:first-child{border-top:none}
   .kalem .ad{font-weight:700;font-size:15px}
-  .kalem .pkt{margin-left:auto;font-weight:900;font-size:18px;color:var(--gd);white-space:nowrap}
+  .kalem .pkt{margin-left:auto;font-weight:900;font-size:18px;color:var(--gd);white-space:nowrap;text-align:right}
   .kalem .pkt small{font-weight:600;color:var(--gr);font-size:12px}
-  .kalem .miktar{font-size:13px;color:var(--gr)}
   .not{font-size:12px;color:#8a6d00;background:#FFF8E1;padding:6px 10px;margin:0 14px 12px;border-radius:6px}
   .btnrow{padding:0 14px 14px}
-  .btn-uygula{width:100%;background:var(--gd);color:#fff;border:none;border-radius:10px;padding:14px;font-size:16px;font-weight:800}
+  .btn-uygula{width:100%;background:var(--gd);color:#fff;border:none;border-radius:10px;padding:13px;font-size:16px;font-weight:800}
   .btn-uygula:active{background:#1B5E20}
-  .done-info{padding:8px 14px 14px;font-size:13px;color:var(--gd);font-weight:600}
+  .done-info{padding:6px 14px 12px;font-size:12px;color:var(--gd);font-weight:600}
   .done-info a{color:#1976D2}
+  .tamamlananlar{margin-top:22px}
+  .tamamlananlar>summary{font-size:14px;font-weight:800;color:var(--gd);cursor:pointer;padding:8px 0}
   .empty{text-align:center;padding:50px 20px;color:var(--gr)}
   .empty .ico{font-size:54px}
-  /* alt sayfa (sheet) */
   .ovl{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;z-index:50}
   .ovl.open{display:flex}
-  .sheet{background:#fff;width:100%;max-width:640px;margin:0 auto;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:90vh;overflow:auto}
+  .sheet{background:#fff;width:100%;max-width:680px;margin:0 auto;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:90vh;overflow:auto}
   .sheet h2{margin:0 0 4px;font-size:17px}
   .sheet .desc{font-size:13px;color:var(--gr);margin-bottom:14px}
   .fld{margin-bottom:14px}
@@ -59,7 +70,7 @@
 </head>
 <body>
 <header>
-  <h1 id="baslik">Saha Görevleri</h1>
+  <h1 id="baslik">🌳 Bahçe Görevleri</h1>
   <div class="sub" id="altbaslik">Yükleniyor…</div>
 </header>
 <div class="wrap">
@@ -67,10 +78,13 @@
     👷 Uygulayan: <b id="kisiAd">—</b>
     <button onclick="kisiDegistir()">değiştir</button>
   </div>
+  <div class="a2hs" id="a2hs" style="display:none">
+    📲 Bunu uygulama gibi kullan: tarayıcı menüsünden <b>"Ana Ekrana Ekle"</b>.
+    <button onclick="this.parentNode.style.display='none'">×</button>
+  </div>
   <div id="liste"></div>
 </div>
 
-<!-- Uygulama onay sayfası -->
 <div class="ovl" id="ovl">
   <div class="sheet">
     <h2 id="shBaslik">Uygulandı olarak işaretle</h2>
@@ -98,29 +112,50 @@
 <script>
 const SAHA_URL='https://yhizogkeyusnawmcdkux.supabase.co';
 const SAHA_KEY='sb_publishable_QhgXQEIXJ3GSKhZf7I20NA_d2x7kSFe';
+const SAHA_CIFTLIK='niyazikaya';
 const HDR={apikey:SAHA_KEY,Authorization:'Bearer '+SAHA_KEY};
 
+// PWA manifest'i çalışma anında ekle (ayrı dosya gerekmez)
+(function(){
+  try{
+    const m={name:"Niyazi Kaya Bahçe Görevleri",short_name:"Bahçe Görevleri",display:"standalone",
+      background_color:"#ffffff",theme_color:"#2E7D32",start_url:"saha.html",scope:"./"};
+    const blob=new Blob([JSON.stringify(m)],{type:'application/manifest+json'});
+    const l=document.createElement('link'); l.rel='manifest'; l.href=URL.createObjectURL(blob);
+    document.head.appendChild(l);
+  }catch(e){}
+  // ana ekrana ekle ipucu — sadece tarayıcıda (yüklü değilse) göster
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+  if(!standalone) try{document.getElementById('a2hs').style.display='flex';}catch(e){}
+})();
+
 const params=new URLSearchParams(location.search);
-const BAHCE=params.get('b')||'';
+const BAHCE=params.get('b')||'';   // opsiyonel: tek bahçe filtresi (geriye dönük uyumluluk)
 let GOREVLER=[];
 let aktifId=null, fotoFile=null;
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function bugun(){return new Date().toISOString().slice(0,10);}
-function fmtT(d){if(!d)return '';const p=d.split('-');return p.length===3?p[2]+'.'+p[1]+'.'+p[0]:d;}
+function fmtT(d){if(!d)return '';const p=String(d).split('-');return p.length===3?p[2]+'.'+p[1]+'.'+p[0]:d;}
+function temizSayi(n){n=Number(n||0);return Number.isInteger(n)?String(n):n.toLocaleString('tr-TR',{maximumFractionDigits:2});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
+function gunEtiket(d){
+  if(!d) return '—';
+  const t=new Date(bugun()), x=new Date(d);
+  const fark=Math.round((x-t)/86400000);
+  if(fark===0) return 'BUGÜN · '+fmtT(d);
+  if(fark===1) return 'YARIN · '+fmtT(d);
+  if(fark===-1) return 'DÜN · '+fmtT(d);
+  if(fark<0) return fmtT(d)+'  (gecikmiş)';
+  return fmtT(d);
+}
 
 /* ── Uygulayan kişi ── */
 function kisiGetir(){return localStorage.getItem('saha_kisi')||'';}
 function kisiSor(zorunlu){
   let ad=kisiGetir();
-  if(!ad||zorunlu){
-    ad=prompt('Adın nedir? (her uygulamada görünecek)',ad||'')||'';
-    ad=ad.trim();
-    if(ad) localStorage.setItem('saha_kisi',ad);
-  }
-  kisiGoster();
-  return ad;
+  if(!ad||zorunlu){ ad=(prompt('Adın nedir? (her uygulamada görünecek)',ad||'')||'').trim(); if(ad) localStorage.setItem('saha_kisi',ad); }
+  kisiGoster(); return ad;
 }
 function kisiDegistir(){kisiSor(true);}
 function kisiGoster(){
@@ -131,39 +166,49 @@ function kisiGoster(){
 
 /* ── Görevleri yükle ── */
 async function yukle(){
-  if(!BAHCE){
-    document.getElementById('altbaslik').textContent='Geçersiz bağlantı';
-    document.getElementById('liste').innerHTML='<div class="empty"><div class="ico">⚠️</div><div>Bahçe bağlantısı eksik. Lütfen yöneticinin gönderdiği linki kullan.</div></div>';
-    return;
-  }
   try{
-    const url=SAHA_URL+'/rest/v1/gorevler?bahce_id=eq.'+encodeURIComponent(BAHCE)+'&order=plan_tarih.asc';
+    let url=SAHA_URL+'/rest/v1/gorevler?ciftlik=eq.'+SAHA_CIFTLIK+'&order=plan_tarih.asc';
+    if(BAHCE) url+='&bahce_id=eq.'+encodeURIComponent(BAHCE);
     const res=await fetch(url,{headers:HDR});
     if(!res.ok) throw new Error('HTTP '+res.status);
     GOREVLER=await res.json();
     ciz();
   }catch(e){
     document.getElementById('altbaslik').textContent='Bağlantı hatası';
-    document.getElementById('liste').innerHTML='<div class="empty"><div class="ico">📡</div><div>İnternete bağlanılamadı. Çekince ekrana dokunup tekrar dene.</div><div style="margin-top:14px"><button class="btn-uygula" style="max-width:200px" onclick="yukle()">↻ Tekrar dene</button></div></div>';
+    document.getElementById('liste').innerHTML='<div class="empty"><div class="ico">📡</div><div>İnternete bağlanılamadı. Çekince tekrar dene.</div><div style="margin-top:14px"><button class="btn-uygula" style="max-width:200px" onclick="yukle()">↻ Tekrar dene</button></div></div>';
   }
 }
 
 function ciz(){
-  const ad=GOREVLER.length?(GOREVLER[0].bahce_ad||''):'';
-  document.getElementById('baslik').textContent=ad?('🌳 '+ad):'Saha Görevleri';
-  const bekleyen=GOREVLER.filter(g=>g.durum!=='uygulandi');
-  document.getElementById('altbaslik').textContent=bekleyen.length+' bekleyen iş'+(GOREVLER.length>bekleyen.length?(' · '+(GOREVLER.length-bekleyen.length)+' tamamlandı'):'');
   kisiGoster();
+  const bekleyen=GOREVLER.filter(g=>g.durum!=='uygulandi');
+  const yapilan=GOREVLER.filter(g=>g.durum==='uygulandi');
+  document.getElementById('altbaslik').textContent=bekleyen.length+' bekleyen iş'+(yapilan.length?(' · '+yapilan.length+' tamamlandı'):'');
 
   if(!GOREVLER.length){
-    document.getElementById('liste').innerHTML='<div class="empty"><div class="ico">🌱</div><div>Bu bahçe için henüz görev gönderilmemiş.</div></div>';
+    document.getElementById('liste').innerHTML='<div class="empty"><div class="ico">🌱</div><div>Şu an gönderilmiş görev yok.<br>Yeni iş gelince burada görünür.</div></div>';
     return;
   }
-  const sirali=[...GOREVLER].sort((a,b)=>{
-    if((a.durum==='uygulandi')!==(b.durum==='uygulandi')) return a.durum==='uygulandi'?1:-1;
-    return (a.plan_tarih||'')<(b.plan_tarih||'')?-1:1;
+
+  // bekleyenleri GÜNE göre grupla, gün içinde BAHÇEye göre
+  const gunler={};
+  bekleyen.forEach(g=>{ (gunler[g.plan_tarih||'—']=gunler[g.plan_tarih||'—']||[]).push(g); });
+  let html='';
+  Object.keys(gunler).sort().forEach(gun=>{
+    html+='<div class="gun">📅 '+esc(gunEtiket(gun))+'<span class="cizgi"></span></div>';
+    const bahceler={};
+    gunler[gun].forEach(g=>{ (bahceler[g.bahce_ad||'—']=bahceler[g.bahce_ad||'—']||[]).push(g); });
+    Object.keys(bahceler).sort().forEach(ad=>{
+      html+='<div class="bahce">🌳 '+esc(ad)+'</div>';
+      html+=bahceler[ad].map(kart).join('');
+    });
   });
-  document.getElementById('liste').innerHTML=sirali.map(kart).join('');
+
+  if(yapilan.length){
+    html+='<details class="tamamlananlar"><summary>✅ Tamamlananlar ('+yapilan.length+')</summary>'
+      +[...yapilan].sort((a,b)=>(a.uyg_tarih||'')<(b.uyg_tarih||'')?1:-1).map(kart).join('')+'</details>';
+  }
+  document.getElementById('liste').innerHTML=html;
 }
 
 function kart(g){
@@ -174,31 +219,25 @@ function kart(g){
       : '<span class="pkt">'+temizSayi(k.miktar)+' <small>'+esc(k.birim)+'</small></span>';
     return '<div class="kalem"><span class="ad">'+esc(k.urun)+'</span>'+pkt+'</div>';
   }).join('');
-  const tipEt=g.tip==='yaprak'?'<span class="tip">🌿 Yaprak</span>':'<span class="tip" style="background:#1565C0">💊 Gübre</span>';
+  const tipEt=g.tip==='yaprak'?'<span class="tip" style="background:#6A1B9A">🌿 Yaprak</span>':'<span class="tip">💊 Gübre</span>';
   return '<div class="card'+(done?' done':'')+'">'
-    +'<div class="top">'
-      +'<span class="tarih">📅 '+fmtT(g.plan_tarih)+'</span>'
-      +(g.parsel?'<span class="parsel">'+esc(g.parsel)+'</span>':'')
-      +tipEt
-    +'</div>'
+    +'<div class="top">'+tipEt+(g.parsel?'<span class="parsel">'+esc(g.parsel)+'</span>':'')+'</div>'
     +'<div class="kalemler">'+kalemler+'</div>'
     +(g.not_metni?'<div class="not">📝 '+esc(g.not_metni)+'</div>':'')
     +(done
        ? '<div class="done-info">✅ Uygulandı — '+fmtT(g.uyg_tarih)+(g.uygulayan?(' · '+esc(g.uygulayan)):'')
           +(g.uyg_not?('<br>📝 '+esc(g.uyg_not)):'')
-          +(g.foto_url?('<br><a href="'+esc(g.foto_url)+'" target="_blank">📷 Fotoğrafı gör</a>'):'')
-          +'</div>'
+          +(g.foto_url?('<br><a href="'+esc(g.foto_url)+'" target="_blank">📷 Fotoğrafı gör</a>'):'')+'</div>'
        : '<div class="btnrow"><button class="btn-uygula" onclick="uygulaAc(\''+g.id+'\')">✅ Uyguladım</button></div>')
     +'</div>';
 }
-function temizSayi(n){n=Number(n||0);return Number.isInteger(n)?String(n):n.toLocaleString('tr-TR',{maximumFractionDigits:2});}
 
 /* ── Onay sayfası ── */
 function uygulaAc(id){
   if(!kisiSor(false)){toast('Önce adını gir');return;}
   aktifId=id;fotoFile=null;
   const g=GOREVLER.find(x=>x.id===id);
-  document.getElementById('shDesc').textContent='📅 '+fmtT(g.plan_tarih)+(g.parsel?(' · '+g.parsel):'');
+  document.getElementById('shDesc').textContent='🌳 '+(g.bahce_ad||'')+' · 📅 '+fmtT(g.plan_tarih)+(g.parsel?(' · '+g.parsel):'');
   document.getElementById('shTarih').value=bugun();
   document.getElementById('shNot').value='';
   document.getElementById('shFoto').value='';
@@ -209,8 +248,7 @@ function sheetKapat(){document.getElementById('ovl').classList.remove('open');ak
 function fotoSecildi(inp){
   fotoFile=inp.files&&inp.files[0]?inp.files[0]:null;
   const pv=document.getElementById('shFotoOnizleme');
-  if(fotoFile){const u=URL.createObjectURL(fotoFile);pv.innerHTML='<img src="'+u+'">';}
-  else pv.innerHTML='';
+  pv.innerHTML=fotoFile?'<img src="'+URL.createObjectURL(fotoFile)+'">':'';
 }
 
 async function uygulamayiKaydet(){
@@ -221,7 +259,7 @@ async function uygulamayiKaydet(){
     let fotoUrl='';
     if(fotoFile){
       const ext=(fotoFile.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
-      const yol=encodeURIComponent(BAHCE)+'/'+aktifId+'_'+Date.now()+'.'+ext;
+      const yol=encodeURIComponent((GOREVLER.find(x=>x.id===aktifId)||{}).bahce_id||'genel')+'/'+aktifId+'_'+Date.now()+'.'+ext;
       const up=await fetch(SAHA_URL+'/storage/v1/object/saha-foto/'+yol,{
         method:'POST',headers:Object.assign({'Content-Type':fotoFile.type||'image/jpeg'},HDR),body:fotoFile});
       if(up.ok) fotoUrl=SAHA_URL+'/storage/v1/object/public/saha-foto/'+yol;
@@ -235,11 +273,8 @@ async function uygulamayiKaydet(){
     if(!res.ok) throw new Error('HTTP '+res.status);
     const g=GOREVLER.find(x=>x.id===aktifId);if(g)Object.assign(g,govde);
     sheetKapat();ciz();toast('✅ Kaydedildi, teşekkürler!');
-  }catch(e){
-    toast('⚠️ Gönderilemedi, tekrar dene');
-  }finally{
-    btn.disabled=false;btn.innerHTML='✅ Uygulandı olarak gönder';
-  }
+  }catch(e){ toast('⚠️ Gönderilemedi, tekrar dene'); }
+  finally{ btn.disabled=false;btn.innerHTML='✅ Uygulandı olarak gönder'; }
 }
 
 kisiGoster();
