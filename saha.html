@@ -332,11 +332,14 @@ function kart(g){
   const yaprak=g.tip==='yaprak';
   const kalemler=(g.kalemler||[]).map(k=>{
     let pkt;
-    if(yaprak||k.perDepo){ pkt='<span class="pkt">'+temizSayi(k.miktar)+' <small>'+esc(k.birim)+'/depo</small></span>'; }
-    else if(k.paket!=null){ pkt='<span class="pkt">'+temizSayi(k.paket)+' paket<br><small>('+temizSayi(k.miktar)+' '+esc(k.birim)+')</small></span>'; }
+    if(k.paket!=null){   // PAKET önceliklidir (hem gübre hem yaprak)
+      const alt = k.perDepo ? '(toplam · '+temizSayi(k.miktar)+' '+esc(k.birim)+'/depo)' : '('+temizSayi(k.miktar)+' '+esc(k.birim)+')';
+      pkt='<span class="pkt">'+temizSayi(k.paket)+' paket<br><small>'+alt+'</small></span>';
+    } else if(yaprak||k.perDepo){ pkt='<span class="pkt">'+temizSayi(k.miktar)+' <small>'+esc(k.birim)+'/depo</small></span>'; }
     else{ pkt='<span class="pkt">'+temizSayi(k.miktar)+' <small>'+esc(k.birim)+'</small></span>'; }
+    const marka=k.marka?'<br><small style="color:#1565C0;font-weight:800">🏷️ '+esc(k.marka)+'</small>':'';
     const hedef=k.hedef?'<br><small style="color:#888;font-weight:600">'+esc(k.hedef)+'</small>':'';
-    return '<div class="kalem"><span class="ad">'+esc(k.urun)+hedef+'</span>'+pkt+'</div>';
+    return '<div class="kalem"><span class="ad">'+esc(k.urun)+marka+hedef+'</span>'+pkt+'</div>';
   }).join('');
   const tipEt=yaprak?'<span class="tip" style="background:#6A1B9A">🌿 Yaprak</span>':'<span class="tip">💊 Gübre</span>';
   const depoBilgi=(yaprak&&!done)?'<div class="not" style="background:#EDE7F6;color:#4527A0">💧 Miktarlar <b>her depo (tank)</b> için · Önerilen: <b>'+esc(g.period||'?')+' depo</b></div>':'';
