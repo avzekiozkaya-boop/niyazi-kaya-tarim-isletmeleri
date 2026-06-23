@@ -93,6 +93,7 @@
     📲 Bunu uygulama gibi kullan: tarayıcı menüsünden <b>"Ana Ekrana Ekle"</b>.
     <button onclick="this.parentNode.style.display='none'">×</button>
   </div>
+  <div id="senkBanner" style="display:none;border-radius:10px;padding:9px 12px;margin-bottom:12px;font-size:12.5px;font-weight:600"></div>
   <div id="tipTabs"></div>
   <div id="liste"></div>
 </div>
@@ -145,6 +146,69 @@ const HDR={apikey:SAHA_KEY,Authorization:'Bearer '+SAHA_KEY};
   if(!standalone) try{document.getElementById('a2hs').style.display='flex';}catch(e){}
 })();
 
+/* ── ÇEVRİMDIŞI: önbellek + gönderim kuyruğu (outbox) + otomatik senkron ── */
+const LS_CACHE='saha_gorevler_cache', LS_OUTBOX='saha_outbox';
+function _cacheGet(){ try{return JSON.parse(localStorage.getItem(LS_CACHE)||'[]')||[];}catch(e){return [];} }
+function _cacheSet(a){ try{localStorage.setItem(LS_CACHE,JSON.stringify(a));}catch(e){} }
+function _outboxGet(){ try{return JSON.parse(localStorage.getItem(LS_OUTBOX)||'[]')||[];}catch(e){return [];} }
+function _outboxSet(a){ try{localStorage.setItem(LS_OUTBOX,JSON.stringify(a));}catch(e){} }
+function _pendingUygula(list){ _outboxGet().forEach(it=>{ const g=list.find(x=>x.id===it.id); if(g) Object.assign(g,it.govde,{_pending:true}); }); }
+// Fotoğrafı küçült (zayıf sinyalde hızlı + yerel saklama için) → base64 jpeg
+function _kucult(file){
+  return new Promise(res=>{ try{
+    const img=new Image(), url=URL.createObjectURL(file);
+    img.onload=()=>{ let w=img.width,h=img.height; const max=1024;
+      if(w>max||h>max){ if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;} }
+      const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h); URL.revokeObjectURL(url);
+      try{res(cv.toDataURL('image/jpeg',0.6));}catch(e){res(null);} };
+    img.onerror=()=>{URL.revokeObjectURL(url);res(null);}; img.src=url;
+  }catch(e){res(null);} });
+}
+function _b64Blob(d){ const parts=d.split(','), mime=(parts[0].match(/:(.*?);/)||[])[1]||'image/jpeg';
+  const bin=atob(parts[1]||''),arr=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+  return new Blob([arr],{type:mime}); }
+function bannerGuncelle(){
+  const el=document.getElementById('senkBanner'); if(!el) return;
+  const n=_outboxGet().length, on=navigator.onLine;
+  if(!n && on){ el.style.display='none'; return; }
+  el.style.display='block';
+  if(!on){ el.style.background='#FFF3E0'; el.style.color='#E65100';
+    el.innerHTML='📴 Çevrimdışı'+(n?(' · <b>'+n+'</b> kayıt sinyal gelince otomatik gönderilecek'):' — son görev listesi telefonda kayıtlı'); }
+  else { el.style.background='#E3F2FD'; el.style.color='#0D47A1';
+    el.innerHTML='<span class="spin" style="border-color:#0D47A1;border-top-color:transparent"></span> '+n+' kayıt gönderiliyor…'; }
+}
+let _senk=false;
+async function senkronEt(){
+  if(_senk) return;
+  let ob=_outboxGet(); if(!ob.length){ bannerGuncelle(); return; }
+  if(!navigator.onLine){ bannerGuncelle(); return; }
+  _senk=true; bannerGuncelle();
+  let basari=0;
+  for(const it of ob.slice()){
+    try{
+      let fotoUrl='';
+      if(it.fotoB64){
+        const yol=encodeURIComponent(it.bahce_id||'genel')+'/'+it.id+'_'+it.ts+'.jpg';
+        const up=await fetch(SAHA_URL+'/storage/v1/object/saha-foto/'+yol,{method:'POST',headers:Object.assign({'Content-Type':'image/jpeg'},HDR),body:_b64Blob(it.fotoB64)});
+        if(up.ok) fotoUrl=SAHA_URL+'/storage/v1/object/public/saha-foto/'+yol;
+      }
+      const govde=Object.assign({},it.govde,{foto_url:fotoUrl});
+      const res=await fetch(SAHA_URL+'/rest/v1/gorevler?id=eq.'+encodeURIComponent(it.id),{method:'PATCH',headers:Object.assign({'Content-Type':'application/json',Prefer:'return=minimal'},HDR),body:JSON.stringify(govde)});
+      if(!res.ok) throw 0;
+      ob=ob.filter(x=>x.id!==it.id); _outboxSet(ob);
+      const g=GOREVLER.find(x=>x.id===it.id); if(g){ delete g._pending; g.foto_url=fotoUrl; }
+      _cacheSet(GOREVLER); basari++;
+    }catch(e){ break; }   // ilk hatada dur (büyük olasılıkla sinyal gitti) → sonra tekrar denenir
+  }
+  _senk=false; ciz(); bannerGuncelle();
+  if(basari && !ob.length) toast('✅ '+basari+' kayıt gönderildi');
+  else if(basari) toast('✅ '+basari+' gönderildi · '+ob.length+' bekliyor');
+}
+
+// Service Worker — sıfır sinyalde de uygulama açılsın (ağ-öncelikli; sw.js aynı klasörde olmalı)
+if('serviceWorker' in navigator){ try{ navigator.serviceWorker.register('sw.js'); }catch(e){} }
+
 const params=new URLSearchParams(location.search);
 const BAHCE=params.get('b')||'';   // opsiyonel: tek bahçe filtresi (geriye dönük uyumluluk)
 let GOREVLER=[];
@@ -194,10 +258,20 @@ async function yukle(elle){
     const res=await fetch(url,{headers:HDR});
     if(!res.ok) throw new Error('HTTP '+res.status);
     GOREVLER=await res.json();
-    ciz();
+    _pendingUygula(GOREVLER);          // yerelde bekleyen kayıtları üstüne uygula
+    _cacheSet(GOREVLER);               // çevrimdışı için sakla
+    ciz(); bannerGuncelle();
+    senkronEt();                       // bekleyen varsa gönder
   }catch(e){
-    document.getElementById('altbaslik').textContent='Bağlantı hatası';
-    document.getElementById('liste').innerHTML='<div class="empty"><div class="ico">📡</div><div>İnternete bağlanılamadı. Çekince tekrar dene.</div><div style="margin-top:14px"><button class="btn-uygula" style="max-width:200px" onclick="yukle(true)">↻ Tekrar dene</button></div></div>';
+    const c=_cacheGet();
+    if(c.length){                      // çevrimdışı: son kayıtlı listeyi göster
+      GOREVLER=c; _pendingUygula(GOREVLER); ciz();
+      const a=document.getElementById('altbaslik'); if(a && !navigator.onLine) a.textContent='📴 Çevrimdışı (kayıtlı liste)';
+    } else {
+      document.getElementById('altbaslik').textContent=navigator.onLine?'Bağlantı hatası':'Çevrimdışı';
+      document.getElementById('liste').innerHTML='<div class="empty"><div class="ico">📡</div><div>'+(navigator.onLine?'İnternete bağlanılamadı.':'Çevrimdışısın ve henüz görev indirilmemiş.')+'<br>Sinyal olan yerde ↻ ile yenileyin.</div><div style="margin-top:14px"><button class="btn-uygula" style="max-width:200px" onclick="yukle(true)">↻ Tekrar dene</button></div></div>';
+    }
+    bannerGuncelle();
   }finally{
     _yukleniyor=false; const b=document.getElementById('yenileBtn'); if(b) b.textContent='↻';
   }
@@ -254,6 +328,7 @@ function ciz(){
 
 function kart(g){
   const done=g.durum==='uygulandi';
+  const pending=done && g._pending;
   const yaprak=g.tip==='yaprak';
   const kalemler=(g.kalemler||[]).map(k=>{
     let pkt;
@@ -266,15 +341,17 @@ function kart(g){
   const tipEt=yaprak?'<span class="tip" style="background:#6A1B9A">🌿 Yaprak</span>':'<span class="tip">💊 Gübre</span>';
   const depoBilgi=(yaprak&&!done)?'<div class="not" style="background:#EDE7F6;color:#4527A0">💧 Miktarlar <b>her depo (tank)</b> için · Önerilen: <b>'+esc(g.period||'?')+' depo</b></div>':'';
   const depoDone=(yaprak&&done&&g.uyg_kalemler&&g.uyg_kalemler[0]&&g.uyg_kalemler[0].depo)?(' · '+g.uyg_kalemler[0].depo+' depo'):'';
-  return '<div class="card'+(done?' done':'')+'">'
+  return '<div class="card'+(done?' done':'')+'"'+(pending?' style="border-left-color:#FB8C00;opacity:1"':'')+'>'
     +'<div class="top">'+tipEt+(g.parsel?'<span class="parsel">'+esc(g.parsel)+'</span>':'')+'</div>'
     +'<div class="kalemler">'+kalemler+'</div>'
     +depoBilgi
     +(g.not_metni?'<div class="not">📝 '+esc(g.not_metni)+'</div>':'')
     +(done
-       ? '<div class="done-info">✅ Uygulandı — '+fmtT(g.uyg_tarih)+depoDone+(g.uygulayan?(' · '+esc(g.uygulayan)):'')
-          +(g.uyg_not?('<br>📝 '+esc(g.uyg_not)):'')
-          +(g.foto_url?('<br><a href="'+esc(g.foto_url)+'" target="_blank">📷 Fotoğrafı gör</a>'):'')+'</div>'
+       ? (pending
+           ? '<div class="done-info" style="color:#E65100">⏳ Kaydedildi — sinyal gelince gönderilecek'+depoDone+(g.uygulayan?(' · '+esc(g.uygulayan)):'')+(g.uyg_not?('<br>📝 '+esc(g.uyg_not)):'')+'</div>'
+           : '<div class="done-info">✅ Uygulandı — '+fmtT(g.uyg_tarih)+depoDone+(g.uygulayan?(' · '+esc(g.uygulayan)):'')
+              +(g.uyg_not?('<br>📝 '+esc(g.uyg_not)):'')
+              +(g.foto_url?('<br><a href="'+esc(g.foto_url)+'" target="_blank">📷 Fotoğrafı gör</a>'):'')+'</div>')
        : '<div class="btnrow"><button class="btn-uygula" onclick="uygulaAc(\''+g.id+'\')">✅ Uyguladım</button></div>')
     +'</div>';
 }
@@ -304,37 +381,36 @@ function fotoSecildi(inp){
 async function uygulamayiKaydet(){
   if(!aktifId)return;
   const btn=document.getElementById('shOnayla');
-  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Gönderiliyor…';
-  try{
-    let fotoUrl='';
-    if(fotoFile){
-      const ext=(fotoFile.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
-      const yol=encodeURIComponent((GOREVLER.find(x=>x.id===aktifId)||{}).bahce_id||'genel')+'/'+aktifId+'_'+Date.now()+'.'+ext;
-      const up=await fetch(SAHA_URL+'/storage/v1/object/saha-foto/'+yol,{
-        method:'POST',headers:Object.assign({'Content-Type':fotoFile.type||'image/jpeg'},HDR),body:fotoFile});
-      if(up.ok) fotoUrl=SAHA_URL+'/storage/v1/object/public/saha-foto/'+yol;
-    }
-    const govde={durum:'uygulandi',uyg_tarih:document.getElementById('shTarih').value||bugun(),
-      uyg_not:document.getElementById('shNot').value.trim(),uygulayan:kisiGetir(),
-      foto_url:fotoUrl,guncelleme:new Date().toISOString()};
-    if((GOREVLER.find(x=>x.id===aktifId)||{}).tip==='yaprak'){
-      govde.uyg_kalemler=[{depo:Number((document.getElementById('shDepo')||{}).value)||0}];
-    }
-    const res=await fetch(SAHA_URL+'/rest/v1/gorevler?id=eq.'+encodeURIComponent(aktifId),{
-      method:'PATCH',headers:Object.assign({'Content-Type':'application/json',Prefer:'return=minimal'},HDR),
-      body:JSON.stringify(govde)});
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const g=GOREVLER.find(x=>x.id===aktifId);if(g)Object.assign(g,govde);
-    sheetKapat();ciz();toast('✅ Kaydedildi, teşekkürler!');
-  }catch(e){ toast('⚠️ Gönderilemedi, tekrar dene'); }
-  finally{ btn.disabled=false;btn.innerHTML='✅ Uygulandı olarak gönder'; }
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Kaydediliyor…';
+  const g=GOREVLER.find(x=>x.id===aktifId)||{};
+  let fotoB64=null;
+  if(fotoFile){ fotoB64=await _kucult(fotoFile); }   // sıkıştır → base64 (yerel sakla)
+  const govde={durum:'uygulandi',uyg_tarih:document.getElementById('shTarih').value||bugun(),
+    uyg_not:document.getElementById('shNot').value.trim(),uygulayan:kisiGetir(),
+    guncelleme:new Date().toISOString()};
+  if(g.tip==='yaprak'){ govde.uyg_kalemler=[{depo:Number((document.getElementById('shDepo')||{}).value)||0}]; }
+  // 1) yerel kuyruğa ekle (anında — internet beklemeden)
+  const it={id:aktifId,govde,fotoB64,bahce_id:g.bahce_id||'genel',ts:Date.now()};
+  const ob=_outboxGet(); const ix=ob.findIndex(x=>x.id===aktifId); if(ix>=0)ob[ix]=it; else ob.push(it); _outboxSet(ob);
+  // 2) ekranda hemen "kaydedildi (bekliyor)" göster
+  Object.assign(g,govde,{_pending:true}); _cacheSet(GOREVLER);
+  btn.disabled=false;btn.innerHTML='✅ Uygulandı olarak gönder';
+  sheetKapat(); ciz(); bannerGuncelle();
+  // 3) sinyal varsa arkada gönder, yoksa kuyrukta kalır
+  if(navigator.onLine){ toast('Gönderiliyor…'); senkronEt(); }
+  else toast('📴 Kaydedildi — sinyal gelince otomatik gönderilecek');
 }
 
 kisiGoster();
+GOREVLER=_cacheGet(); if(GOREVLER.length){ _pendingUygula(GOREVLER); ciz(); }   // anında önbellekten göster
+bannerGuncelle();
 yukle();
-// uygulama öne gelince / sekme görünür olunca otomatik yenile (iptal edilenler düşer, yeni işler gelir)
-document.addEventListener('visibilitychange',()=>{ if(!document.hidden) yukle(); });
-window.addEventListener('focus',()=>yukle());
+// uygulama öne gelince / sekme görünür olunca: yenile + bekleyenleri gönder
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ yukle(); senkronEt(); } });
+window.addEventListener('focus',()=>{ yukle(); senkronEt(); });
+window.addEventListener('online',()=>{ bannerGuncelle(); senkronEt(); yukle(); });
+window.addEventListener('offline',()=>{ bannerGuncelle(); });
+setInterval(()=>{ if(navigator.onLine && _outboxGet().length) senkronEt(); }, 30000);   // 30 sn'de bir bekleyenleri dene
 </script>
 </body>
 </html>
