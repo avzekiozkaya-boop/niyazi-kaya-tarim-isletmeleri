@@ -13,8 +13,29 @@
   "dir": "ltr",
   "prefer_related_applications": false,
   "icons": [
-    { "src": "saha-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
-    { "src": "saha-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" },
-    { "src": "saha-512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
+    {
+      "src": "saha-180.png",
+      "type": "image/png",
+      "sizes": "180x180",
+      "purpose": "any"
+    },
+    {
+      "src": "saha-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "saha-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "saha-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
   ]
 }
