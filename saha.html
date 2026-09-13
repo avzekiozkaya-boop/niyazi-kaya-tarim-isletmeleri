@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="saha-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -90,12 +92,13 @@
     <button onclick="kisiDegistir()">değiştir</button>
   </div>
   <div class="a2hs" id="a2hs" style="display:none">
-    📲 Bunu uygulama gibi kullan: tarayıcı menüsünden <b>"Ana Ekrana Ekle"</b>.
+    <span class="a2hs-metin">📲 Uygulama gibi kullanmak için tarayıcı menüsünü açın.</span>
     <button onclick="this.parentNode.style.display='none'">×</button>
   </div>
   <div id="senkBanner" style="display:none;border-radius:10px;padding:9px 12px;margin-bottom:12px;font-size:12.5px;font-weight:600"></div>
   <div id="tipTabs"></div>
   <div id="liste"></div>
+  <div id="surumDamga" style="text-align:center;color:#9aa0a6;font-size:11px;margin:18px 0 4px"></div>
 </div>
 
 <div class="ovl" id="ovl">
@@ -134,18 +137,21 @@ const SAHA_KEY='sb_publishable_QhgXQEIXJ3GSKhZf7I20NA_d2x7kSFe';
 const SAHA_CIFTLIK='nk_19abc7b7292b619aacb796bd6c8f';
 const HDR={apikey:SAHA_KEY,Authorization:'Bearer '+SAHA_KEY,'x-ciftlik':SAHA_CIFTLIK};
 
-// PWA manifest'i çalışma anında ekle (ayrı dosya gerekmez)
+// Bu sayfanın sürümü. Ekranın altında görünür — eski bir kopyayı açtığınızda anlaşılsın diye.
+const SAHA_SURUM='2026-09-13';
+
+// Ana ekrana ekleme ipucu. Manifest artık ayrı bir dosya (manifest.webmanifest);
+// blob URL'li manifest Chrome'un kurulabilirlik şartlarını karşılamıyordu.
 (function(){
-  try{
-    const m={name:"Niyazi Kaya Bahçe Görevleri",short_name:"Bahçe Görevleri",display:"standalone",
-      background_color:"#ffffff",theme_color:"#2E7D32",start_url:"saha.html",scope:"./"};
-    const blob=new Blob([JSON.stringify(m)],{type:'application/manifest+json'});
-    const l=document.createElement('link'); l.rel='manifest'; l.href=URL.createObjectURL(blob);
-    document.head.appendChild(l);
-  }catch(e){}
-  // ana ekrana ekle ipucu — sadece tarayıcıda (yüklü değilse) göster
   const standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
-  if(!standalone) try{document.getElementById('a2hs').style.display='flex';}catch(e){}
+  if(standalone) return;                       // zaten uygulama olarak açılmış
+  const el=document.getElementById('a2hs'); if(!el) return;
+  const ua=navigator.userAgent||'';
+  const ios=/iPhone|iPad|iPod/.test(ua);
+  el.querySelector('.a2hs-metin').innerHTML = ios
+    ? 'Uygulama gibi kullanmak için: altta <b>Paylaş</b> (kare + yukarı ok) → <b>Ana Ekrana Ekle</b>.'
+    : 'Uygulama gibi kullanmak için: sağ üstteki <b>⋮</b> menüsü → <b>Uygulamayı yükle</b> (ya da “Ana ekrana ekle”).';
+  el.style.display='flex';
 })();
 
 /* ── ÇEVRİMDIŞI: önbellek + gönderim kuyruğu (outbox) + otomatik senkron ── */
@@ -409,6 +415,7 @@ async function uygulamayiKaydet(){
 }
 
 kisiGoster();
+try{ document.getElementById('surumDamga').textContent='Sürüm '+SAHA_SURUM; }catch(e){}
 GOREVLER=_cacheGet(); if(GOREVLER.length){ _pendingUygula(GOREVLER); ciz(); }   // anında önbellekten göster
 bannerGuncelle();
 yukle();
