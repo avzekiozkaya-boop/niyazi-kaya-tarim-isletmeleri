@@ -129,8 +129,10 @@
 <script>
 const SAHA_URL='https://yhizogkeyusnawmcdkux.supabase.co';
 const SAHA_KEY='sb_publishable_QhgXQEIXJ3GSKhZf7I20NA_d2x7kSFe';
-const SAHA_CIFTLIK='niyazikaya';
-const HDR={apikey:SAHA_KEY,Authorization:'Bearer '+SAHA_KEY};
+// Çiftlik erişim kodu. Sunucudaki RLS politikası bu kodu 'x-ciftlik' başlığından
+// okur; kodu göndermeyen istek HİÇBİR satır göremez. Her çiftliğin kodu farklıdır.
+const SAHA_CIFTLIK='nk_19abc7b7292b619aacb796bd6c8f';
+const HDR={apikey:SAHA_KEY,Authorization:'Bearer '+SAHA_KEY,'x-ciftlik':SAHA_CIFTLIK};
 
 // PWA manifest'i çalışma anında ekle (ayrı dosya gerekmez)
 (function(){
@@ -189,7 +191,9 @@ async function senkronEt(){
     try{
       let fotoUrl='';
       if(it.fotoB64){
-        const yol=encodeURIComponent(it.bahce_id||'genel')+'/'+it.id+'_'+it.ts+'.jpg';
+        // İlk klasör = çiftlik kodu. Depodaki yazma politikası bunu şart koşuyor,
+        // böylece bir çiftlik başka bir çiftliğin klasörüne dosya atamaz.
+        const yol=encodeURIComponent(SAHA_CIFTLIK)+'/'+encodeURIComponent(it.bahce_id||'genel')+'/'+it.id+'_'+it.ts+'.jpg';
         const up=await fetch(SAHA_URL+'/storage/v1/object/saha-foto/'+yol,{method:'POST',headers:Object.assign({'Content-Type':'image/jpeg'},HDR),body:_b64Blob(it.fotoB64)});
         if(up.ok) fotoUrl=SAHA_URL+'/storage/v1/object/public/saha-foto/'+yol;
       }
