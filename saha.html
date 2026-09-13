@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bahçe Görevleri">
 <meta name="theme-color" content="#2E7D32">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Crect width='180' height='180' rx='34' fill='%232E7D32'/%3E%3Ctext x='50%25' y='54%25' font-size='80' text-anchor='middle' dominant-baseline='central' fill='white' font-family='Arial' font-weight='bold'%3ENK%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" sizes="180x180" href="saha-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' rx='12' fill='%232E7D32'/%3E%3Ctext x='50%25' y='56%25' font-size='30' text-anchor='middle' dominant-baseline='central' fill='white' font-family='Arial' font-weight='bold'%3ENK%3C/text%3E%3C/svg%3E">
 <title>Niyazi Kaya Bahçe Görevleri</title>
 <style>
@@ -20,15 +20,15 @@
   header{background:var(--gd);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.15)}
   header h1{margin:0;font-size:18px;font-weight:800}
   header .sub{font-size:12px;opacity:.9;margin-top:2px}
-  .wrap{padding:12px;max-width:680px;margin:0 auto}
+  .wrap{padding:12px;max-width:680px;margin:0 auto;overflow-x:hidden}
   .kisi{background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:13px;border:1px solid #e2e2e2}
   .kisi b{color:var(--gd)}
   .kisi button{margin-left:auto;background:none;border:none;color:#1976D2;font-weight:700;font-size:13px}
   .a2hs{background:#E3F2FD;border:1px solid #90CAF9;color:#0D47A1;border-radius:10px;padding:9px 12px;margin-bottom:12px;font-size:12px;display:flex;gap:8px;align-items:center}
   .a2hs button{margin-left:auto;background:none;border:none;color:#0D47A1;font-size:16px}
   .tiptabs{display:flex;gap:8px;margin-bottom:12px}
-  .tiptab{flex:1;text-align:center;padding:12px 8px;border-radius:11px;border:1.5px solid #d8d8d8;background:#fff;font-weight:800;font-size:15px;color:#555}
-  .tiptab .n{display:inline-block;min-width:20px;margin-left:4px;padding:0 6px;border-radius:20px;background:#eee;color:#555;font-size:12px}
+  .tiptab{flex:1;min-width:0;text-align:center;padding:12px 6px;border-radius:11px;border:1.5px solid #d8d8d8;background:#fff;font-weight:800;font-size:15px;color:#555}
+  .tiptab .n{display:inline-block;min-width:18px;margin-left:3px;padding:0 5px;border-radius:20px;background:#eee;color:#555;font-size:12px}
   .tiptab.g.act{background:#1565C0;color:#fff;border-color:#1565C0}
   .tiptab.y.act{background:#6A1B9A;color:#fff;border-color:#6A1B9A}
   .tiptab.act .n{background:rgba(255,255,255,.25);color:#fff}
@@ -74,6 +74,33 @@
   .toast.show{opacity:.95}
   .spin{display:inline-block;width:16px;height:16px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-3px;margin-right:6px}
   @keyframes sp{to{transform:rotate(360deg)}}
+  /* sonuç seçimi, sayaçlar, sebep listesi */
+  .tiptab.h.act{background:#C2560E;color:#fff;border-color:#C2560E}
+  .card.hasat{border-left-color:#C2560E}
+  .seg{display:flex;gap:6px}
+  .seg button{flex:1;min-width:0;padding:12px 3px;border-radius:10px;border:1.5px solid #d8d8d8;background:#fff;
+    font-weight:800;font-size:14px;color:#666;line-height:1.25}
+  .seg button.on{background:var(--gd);border-color:var(--gd);color:#fff}
+  .seg button.on.amber{background:#A86412;border-color:#A86412}
+  .seg button.on.brick{background:#9B2F26;border-color:#9B2F26}
+  .qrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0f0f0}
+  .qrow:last-child{border-bottom:none}
+  .qrow .nm{flex:1;min-width:0;font-weight:700;font-size:14.5px}
+  .qrow .nm small{display:block;font-weight:600;color:var(--gr);font-size:11.5px;margin-top:1px}
+  .stp{display:flex;align-items:center;border:1.5px solid #cfcfcf;border-radius:10px;overflow:hidden;background:#fff}
+  .stp button{width:40px;height:44px;border:none;background:#fff;font-size:22px;color:var(--gd);font-weight:700}
+  .stp button:active{background:#eef5ef}
+  .stp input{width:64px;height:44px;border:none;border-left:1.5px solid #cfcfcf;border-right:1.5px solid #cfcfcf;
+    text-align:center;font-size:16px;font-weight:700;font-family:inherit;padding:0}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chips button{border:1.5px solid #d8d8d8;background:#fff;border-radius:22px;padding:9px 13px;
+    font-size:13.5px;font-weight:700;color:#555}
+  .chips button.on{background:#9B2F26;border-color:#9B2F26;color:#fff}
+  .uyari{background:#F7EDDD;border-left:4px solid #A86412;padding:10px 12px;border-radius:8px;
+    font-size:13px;color:#5a4418;margin-bottom:14px;line-height:1.5}
+  .hesap{background:#F9EADF;border-left:4px solid #C2560E;padding:11px 12px;border-radius:8px;margin-bottom:14px}
+  .hesap .big{display:block;font-size:26px;font-weight:900;color:#C2560E;line-height:1.15}
+  .hesap .alt{font-size:12.5px;color:#7a4a24;margin-top:2px}
 </style>
 </head>
 <body>
@@ -103,27 +130,20 @@
 
 <div class="ovl" id="ovl">
   <div class="sheet">
-    <h2 id="shBaslik">Uygulandı olarak işaretle</h2>
+    <h2 id="shBaslik">İşi kapat</h2>
     <div class="desc" id="shDesc"></div>
-    <div class="fld">
-      <label>Uygulama tarihi</label>
-      <input type="date" id="shTarih">
-    </div>
-    <div class="fld" id="shDepoFld" style="display:none">
-      <label>Kaç depo (tank) uyguladın?</label>
-      <input type="number" id="shDepo" min="0" step="1" inputmode="numeric">
-    </div>
+    <div id="shGovde"></div>
     <div class="fld">
       <label>Fotoğraf (isteğe bağlı)</label>
-      <label class="fotobtn" for="shFoto">📷 Fotoğraf çek / seç</label>
+      <label class="fotobtn" for="shFoto" id="shFotoEtiket">📷 Fotoğraf çek / seç</label>
       <input type="file" id="shFoto" accept="image/*" capture="environment" style="display:none" onchange="fotoSecildi(this)">
       <div class="foto-onizleme" id="shFotoOnizleme"></div>
     </div>
     <div class="fld">
-      <label>Not (isteğe bağlı — plandan farklı uyguladıysan yaz)</label>
-      <textarea id="shNot" rows="2" placeholder="Örn: 1 paket eksik kaldı"></textarea>
+      <label id="shNotEtiket">Not (isteğe bağlı)</label>
+      <textarea id="shNot" rows="2" placeholder="Örn: fosforik asit deposu boştu"></textarea>
     </div>
-    <button class="onayla" id="shOnayla" onclick="uygulamayiKaydet()">✅ Uygulandı olarak gönder</button>
+    <button class="onayla" id="shOnayla" onclick="uygulamayiKaydet()">Gönder</button>
     <button class="vazgec" onclick="sheetKapat()">Vazgeç</button>
   </div>
 </div>
@@ -138,7 +158,7 @@ const SAHA_CIFTLIK='nk_19abc7b7292b619aacb796bd6c8f';
 const HDR={apikey:SAHA_KEY,Authorization:'Bearer '+SAHA_KEY,'x-ciftlik':SAHA_CIFTLIK};
 
 // Bu sayfanın sürümü. Ekranın altında görünür — eski bir kopyayı açtığınızda anlaşılsın diye.
-const SAHA_SURUM='2026-09-13';
+const SAHA_SURUM='2026-09-13c';
 
 // Ana ekrana ekleme ipucu. Manifest artık ayrı bir dosya (manifest.webmanifest);
 // blob URL'li manifest Chrome'un kurulabilirlik şartlarını karşılamıyordu.
@@ -289,22 +309,25 @@ async function yukle(elle){
 
 function ciz(){
   kisiGoster();
-  const tipi=g=>(g.tip==='yaprak'?'yaprak':'gubre');
-  const gubreN=GOREVLER.filter(g=>g.durum!=='uygulandi'&&tipi(g)==='gubre').length;
-  const yaprakN=GOREVLER.filter(g=>g.durum!=='uygulandi'&&tipi(g)==='yaprak').length;
+  const tipi=g=>(g.tip==='yaprak'?'yaprak':(g.tip==='hasat'?'hasat':'gubre'));
+  const say=t=>GOREVLER.filter(g=>g.durum!=='uygulandi'&&tipi(g)===t).length;
+  const gubreN=say('gubre'), yaprakN=say('yaprak'), hasatN=say('hasat');
   // ilk açılışta bekleyeni olan sekmeyi seç
-  if(!_tipInit){ _tipInit=true; aktifTip=(gubreN===0&&yaprakN>0)?'yaprak':'gubre'; }
+  if(!_tipInit){ _tipInit=true;
+    aktifTip = gubreN? 'gubre' : (yaprakN? 'yaprak' : (hasatN? 'hasat' : 'gubre')); }
 
   // sekmeler
   document.getElementById('tipTabs').innerHTML = GOREVLER.length?(
     '<div class="tiptabs">'
     +'<button class="tiptab g'+(aktifTip==='gubre'?' act':'')+'" onclick="tipSec(\'gubre\')">💊 Gübre <span class="n">'+gubreN+'</span></button>'
     +'<button class="tiptab y'+(aktifTip==='yaprak'?' act':'')+'" onclick="tipSec(\'yaprak\')">🌿 Yaprak <span class="n">'+yaprakN+'</span></button>'
+    +'<button class="tiptab h'+(aktifTip==='hasat'?' act':'')+'" onclick="tipSec(\'hasat\')">🧺 Hasat <span class="n">'+hasatN+'</span></button>'
     +'</div>'):'';
 
   const bekleyen=GOREVLER.filter(g=>g.durum!=='uygulandi'&&tipi(g)===aktifTip);
   const yapilan=GOREVLER.filter(g=>g.durum==='uygulandi'&&tipi(g)===aktifTip);
-  document.getElementById('altbaslik').textContent=(aktifTip==='yaprak'?'🌿 Yaprak':'💊 Gübre')+' · '+bekleyen.length+' bekleyen'+(yapilan.length?(' · '+yapilan.length+' tamamlandı'):'');
+  const tipAd={gubre:'💊 Gübre',yaprak:'🌿 Yaprak',hasat:'🧺 Hasat'}[aktifTip]||'💊 Gübre';
+  document.getElementById('altbaslik').textContent=tipAd+' · '+bekleyen.length+' bekleyen'+(yapilan.length?(' · '+yapilan.length+' tamamlandı'):'');
 
   if(!GOREVLER.length){
     document.getElementById('liste').innerHTML='<div class="empty"><div class="ico">🌱</div><div>Şu an gönderilmiş görev yok.<br>Yeni iş gelince burada görünür.</div></div>';
@@ -336,7 +359,17 @@ function ciz(){
   document.getElementById('liste').innerHTML=html;
 }
 
+// Kapatılmış bir işin sonuç etiketi
+function sonucEt(g){
+  if(g.sonuc==='yarim'){
+    const n=(g.uyg_kalemler||[]).find(x=>x&&x.parselBiten!=null);
+    return 'Yarım kaldı'+(n?(' — '+n.parselBiten+' parsel'):'');
+  }
+  if(g.tip==='hasat') return '🧺 Hasat girildi';
+  return '✅ Uygulandı';
+}
 function kart(g){
+  if(g.tip==='hasat') return kartHasat(g);
   const done=g.durum==='uygulandi';
   const pending=done && g._pending;
   const yaprak=g.tip==='yaprak';
@@ -359,29 +392,82 @@ function kart(g){
     +'<div class="kalemler">'+kalemler+'</div>'
     +depoBilgi
     +(g.not_metni?'<div class="not">📝 '+esc(g.not_metni)+'</div>':'')
+    +((!done&&g.sonuc==='yapilamadi')
+        ? '<div class="not" style="background:#F7E5E2;color:#7d241d">✕ Yapılamadı — '+esc(g.sebep||'sebep yazılmadı')
+          +(g.uyg_not?(' · '+esc(g.uyg_not)):'')+'<br>İş planda duruyor.</div>' : '')
     +(done
        ? (pending
            ? '<div class="done-info" style="color:#E65100">⏳ Kaydedildi — sinyal gelince gönderilecek'+depoDone+(g.uygulayan?(' · '+esc(g.uygulayan)):'')+(g.uyg_not?('<br>📝 '+esc(g.uyg_not)):'')+'</div>'
-           : '<div class="done-info">✅ Uygulandı — '+fmtT(g.uyg_tarih)+depoDone+(g.uygulayan?(' · '+esc(g.uygulayan)):'')
+           : '<div class="done-info">'+sonucEt(g)+' — '+fmtT(g.uyg_tarih)+depoDone+(g.uygulayan?(' · '+esc(g.uygulayan)):'')
               +(g.uyg_not?('<br>📝 '+esc(g.uyg_not)):'')
               +(g.foto_url?('<br><a href="'+esc(g.foto_url)+'" target="_blank">📷 Fotoğrafı gör</a>'):'')+'</div>')
        : '<div class="btnrow"><button class="btn-uygula" onclick="uygulaAc(\''+g.id+'\')">✅ Uyguladım</button></div>')
     +'</div>';
 }
 
-/* ── Onay sayfası ── */
+// Hasat görevi kartı
+function kartHasat(g){
+  const done=g.durum==='uygulandi';
+  const pending=done&&g._pending;
+  const u=(g.uyg_kalemler||[])[0]||{};
+  const plan=(g.kalemler||[]).map(k=>esc(k.urun||'')+(k.miktar?(' · '+temizSayi(k.miktar)+' '+esc(k.birim||'')):'')).join(' · ');
+  return '<div class="card hasat'+(done?' done':'')+'"'+(pending?' style="border-left-color:#FB8C00;opacity:1"':'')+'>'
+    +'<div class="top"><span class="tip" style="background:#C2560E">🧺 Hasat</span>'
+      +(g.parsel?'<span class="parsel">'+esc(g.parsel)+'</span>':'')+'</div>'
+    +'<div class="kalemler"><div class="kalem"><span class="ad">'+esc(g.bahce_ad||'')
+      +(plan?'<br><small style="color:#888;font-weight:600">'+plan+'</small>':'')+'</span></div></div>'
+    +(g.not_metni?'<div class="not">📝 '+esc(g.not_metni)+'</div>':'')
+    +(done
+       ? '<div class="done-info" style="color:#C2560E">'+(pending?'⏳ Kaydedildi — sinyal gelince gönderilecek':'🧺 Hasat girildi — '+fmtT(g.uyg_tarih))
+          +(u.kg?(' · <b>'+temizSayi(u.kg)+' kg</b>'):'')
+          +(u.kasa?(' ('+temizSayi(u.kasa)+' kasa × '+temizSayi(u.kasaKg)+' kg)'):'')
+          +(g.uygulayan?(' · '+esc(g.uygulayan)):'')
+          +(g.uyg_not?('<br>📝 '+esc(g.uyg_not)):'')
+          +(g.foto_url?('<br><a href="'+esc(g.foto_url)+'" target="_blank">📷 Kantar fişi</a>'):'')+'</div>'
+       : '<div class="btnrow"><button class="btn-uygula" style="background:#C2560E" onclick="uygulaAc(\''+g.id+'\')">🧺 Hasat kaydı gir</button></div>')
+    +'</div>';
+}
+
+/* ── Onay sayfası ─────────────────────────────────────────────────────────
+   Üç sonuç: tamam / yarim / yapilamadi. Hasat görevi ayrı bir ekran.
+   Çevrimdışı kuyruk değişmedi — gövdeye alan eklemek kuyruğu bozmuyor. */
+
+const SEBEPLER=['Hava karardı','Ürün bitti','Makine arızası','Rüzgâr','Bahçe ıslak','Yağmur','İşçi gelmedi'];
+
+let shSonuc='tamam';      // tamam | yarim | yapilamadi | hasat
+let shMik=[];             // gübre kalemleri: gerçekte kullanılan
+let shDepo=0;             // yaprak: uygulanan depo sayısı
+let shParselBiten=0;      // yarım kaldıysa biten parsel
+let shParselTop=0;
+let shSebep='';
+let shKasa=0, shKasaKg=0, shParselAd='';
+
+function shSayi(v){ v=Number(v); return isFinite(v)&&v>0?v:0; }
+function shPlanMik(k){ return (k&&k.paket!=null)?Number(k.paket||0):Number((k&&k.miktar)||0); }
+function shBirimAd(k){ return (k&&k.paket!=null)?'paket':((k&&k.birim)||''); }
+
 function uygulaAc(id){
   if(!kisiSor(false)){toast('Önce adını gir');return;}
-  aktifId=id;fotoFile=null;
-  const g=GOREVLER.find(x=>x.id===id);
-  document.getElementById('shDesc').textContent='🌳 '+(g.bahce_ad||'')+' · 📅 '+fmtT(g.plan_tarih)+(g.parsel?(' · '+g.parsel):'')+(g.tip==='yaprak'?' · 🌿 Yaprak':'');
-  document.getElementById('shTarih').value=bugun();
-  const yaprak=g.tip==='yaprak';
-  document.getElementById('shDepoFld').style.display=yaprak?'block':'none';
-  if(yaprak) document.getElementById('shDepo').value=g.period||'';
+  aktifId=id; fotoFile=null;
+  const g=GOREVLER.find(x=>x.id===id)||{};
+  const hasat=g.tip==='hasat';
+
+  shSonuc = hasat?'hasat':'tamam';
+  shSebep=''; shParselBiten=0;
+  shParselTop = Number(g.parselSayisi||0) || 0;
+  shMik = (g.kalemler||[]).map(k=>shPlanMik(k));
+  shDepo = Number(g.period||0)||0;
+  shKasa=0; shKasaKg=25; shParselAd=g.parsel||'';
+
+  document.getElementById('shBaslik').textContent = hasat?'Hasat kaydı':'İşi kapat';
+  document.getElementById('shDesc').textContent='🌳 '+(g.bahce_ad||'')+' · 📅 '+fmtT(g.plan_tarih)
+    +(g.parsel?(' · '+g.parsel):'')+(g.tip==='yaprak'?' · 🌿 Yaprak':(hasat?' · 🧺 Hasat':''));
   document.getElementById('shNot').value='';
   document.getElementById('shFoto').value='';
   document.getElementById('shFotoOnizleme').innerHTML='';
+  document.getElementById('shFotoEtiket').textContent = hasat?'📷 Kantar fişini çek / seç':'📷 Fotoğraf çek / seç';
+  document.getElementById('shNotEtiket').textContent = 'Not (isteğe bağlı)';
+  shCiz();
   document.getElementById('ovl').classList.add('open');
 }
 function sheetKapat(){document.getElementById('ovl').classList.remove('open');aktifId=null;fotoFile=null;}
@@ -391,23 +477,152 @@ function fotoSecildi(inp){
   pv.innerHTML=fotoFile?'<img src="'+URL.createObjectURL(fotoFile)+'">':'';
 }
 
+/* ── sayaç ── */
+function stp(deger, fn, adim, ilkArg){
+  adim=adim||1;
+  const pre=(ilkArg==null?'':ilkArg+',');
+  // Not: alana yazarken onchange kullanılıyor (oninput olsaydı her harfte
+  // gövde yeniden çizilip imleç kaybolurdu).
+  return '<div class="stp">'
+    +'<button type="button" onclick="'+fn+'('+pre+'-'+adim+')">−</button>'
+    +'<input type="number" inputmode="numeric" value="'+deger+'" onchange="'+fn+'('+pre+'0,this.value)">'
+    +'<button type="button" onclick="'+fn+'('+pre+adim+')">+</button></div>';
+}
+function shMikDegis(i,d,v){ if(v!=null){shMik[i]=shSayi(v);} else {shMik[i]=Math.max(0,shSayi(shMik[i])+d);} shCiz(); }
+function shDepoDegis(d,v){ shDepo = (v!=null)?shSayi(v):Math.max(0,shSayi(shDepo)+d); shCiz(); }
+function shParselDegis(d,v){ shParselBiten=(v!=null)?shSayi(v):Math.max(0,shSayi(shParselBiten)+d); shCiz(); }
+function shKasaDegis(d,v){ shKasa=(v!=null)?shSayi(v):Math.max(0,shSayi(shKasa)+d); shCiz(); }
+function shKasaKgDegis(d,v){ shKasaKg=(v!=null)?shSayi(v):Math.max(0,shSayi(shKasaKg)+d); shCiz(); }
+function shSonucSec(t){ shSonuc=t; if(t!=='yarim') shParselBiten=0; if(t==='tamam') shSebep=''; shCiz(); }
+function shSebepSec(x){ shSebep=(shSebep===x)?'':x; shCiz(); }
+
+/* ── onay gövdesini çiz ── */
+function shCiz(){
+  const g=GOREVLER.find(x=>x.id===aktifId)||{};
+  const el=document.getElementById('shGovde');
+  const btn=document.getElementById('shOnayla');
+  let h='';
+
+  if(shSonuc==='hasat'){
+    h+='<div class="fld"><label>Parsel / yer</label>'
+      +'<input type="text" id="shParselAd" value="'+esc(shParselAd)+'" placeholder="örn: 2 numaralı parsel" oninput="shParselAd=this.value"></div>';
+    h+='<div class="fld"><label>Toplanan</label>'
+      +'<div class="qrow"><div class="nm">Kasa adedi<small>bugün toplanan</small></div>'+stp(shKasa,'shKasaDegis',10)+'</div>'
+      +'<div class="qrow"><div class="nm">Kasa ortalaması<small>kilogram</small></div>'+stp(shKasaKg,'shKasaKgDegis',1)+'</div></div>';
+    const kg=shSayi(shKasa)*shSayi(shKasaKg);
+    h+='<div class="hesap">Bu kayıt<span class="big">'+temizSayi(kg)+' kg</span>'
+      +'<div class="alt">'+temizSayi(shKasa)+' kasa × '+temizSayi(shKasaKg)+' kg'+(shParselAd?(' · '+esc(shParselAd)):'')+'</div></div>';
+    h+='<div class="fld"><label>Hasat tarihi</label><input type="date" id="shTarih" value="'+bugun()+'"></div>';
+    btn.textContent='🧺 Hasat kaydını gönder';
+    btn.style.background='#C2560E';
+    el.innerHTML=h; return;
+  }
+
+  // sonuç seçimi
+  h+='<div class="fld"><label>Sonuç</label><div class="seg">'
+    +'<button type="button" class="'+(shSonuc==='tamam'?'on':'')+'" onclick="shSonucSec(\'tamam\')">Tamam&shy;ladım</button>'
+    +'<button type="button" class="'+(shSonuc==='yarim'?'on amber':'')+'" onclick="shSonucSec(\'yarim\')">Yarım kaldı</button>'
+    +'<button type="button" class="'+(shSonuc==='yapilamadi'?'on brick':'')+'" onclick="shSonucSec(\'yapilamadi\')">Yapa&shy;madım</button>'
+    +'</div></div>';
+
+  if(shSonuc!=='yapilamadi'){
+    if(shSonuc==='yarim' && shParselTop>0){
+      h+='<div class="fld"><label>Kaç parsel bitti?</label>'
+        +'<div class="qrow"><div class="nm">Bitirilen parsel<small>'+shParselTop+' parselin</small></div>'
+        +stp(shParselBiten,'shParselDegis',1)+'</div></div>';
+    }
+    if(g.tip==='yaprak'){
+      h+='<div class="fld"><label>Kaç depo (tank) uyguladın?</label>'
+        +'<div class="qrow"><div class="nm">Depo sayısı<small>önerilen: '+esc(String(g.period||'?'))+'</small></div>'
+        +stp(shDepo,'shDepoDegis',1)+'</div></div>';
+    } else {
+      const ks=(g.kalemler||[]);
+      if(ks.length){
+        h+='<div class="fld"><label>Gerçekte ne kadar attın?</label>';
+        ks.forEach((k,i)=>{
+          const plan=shPlanMik(k), br=shBirimAd(k);
+          h+='<div class="qrow"><div class="nm">'+esc(k.urun||'')
+            +'<small>plan: '+temizSayi(plan)+' '+esc(br)+(k.marka?(' · '+esc(k.marka)):'')+'</small></div>'
+            +stp(shMik[i],'shMikDegis',1,i)
+            +'</div>';
+        });
+        const sifir=ks.some((k,i)=>shPlanMik(k)>0 && shSayi(shMik[i])===0);
+        h+='</div>';
+        if(sifir) h+='<div class="uyari">Bir kalemi <b>0</b> bıraktın. Neden atılmadığını aşağıya yazarsan stok doğru kalır.</div>';
+      }
+    }
+    if(shSonuc==='yarim'){
+      h+='<div class="uyari">Kalan iş <b>yeni bir görev</b> olarak programa düşecek; kaybolmayacak.</div>';
+      h+=shSebepBlok('Neden yarım kaldı?');
+    }
+    h+='<div class="fld"><label>Uygulama tarihi</label><input type="date" id="shTarih" value="'+bugun()+'"></div>';
+    btn.textContent = shSonuc==='yarim' ? 'Yarım kaldı olarak gönder' : '✅ Uygulandı olarak gönder';
+    btn.style.background = shSonuc==='yarim' ? '#A86412' : '';
+  } else {
+    h+='<div class="uyari">Hiçbir şey uygulanmadı sayılacak: stoktan düşülmeyecek, iş planda kalacak.</div>';
+    h+=shSebepBlok('Neden yapılamadı?');
+    h+='<input type="hidden" id="shTarih" value="'+bugun()+'">';
+    btn.textContent='✕ Yapamadım olarak bildir';
+    btn.style.background='#9B2F26';
+  }
+  el.innerHTML=h;
+}
+function shSebepBlok(baslik){
+  return '<div class="fld"><label>'+baslik+'</label><div class="chips">'
+    +SEBEPLER.map(x=>'<button type="button" class="'+(shSebep===x?'on':'')+'" onclick="shSebepSec(\''+x.replace(/'/g,"\\'")+'\')">'+esc(x)+'</button>').join('')
+    +'</div></div>';
+}
+
+/* ── kaydet ── */
 async function uygulamayiKaydet(){
   if(!aktifId)return;
-  const btn=document.getElementById('shOnayla');
-  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Kaydediliyor…';
   const g=GOREVLER.find(x=>x.id===aktifId)||{};
+  if(shSonuc==='yapilamadi' && !shSebep && !document.getElementById('shNot').value.trim()){
+    toast('Sebep seç ya da nota yaz'); return;
+  }
+  if(shSonuc==='hasat' && shSayi(shKasa)<=0){ toast('Kasa adedini gir'); return; }
+
+  const btn=document.getElementById('shOnayla');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>Kaydediliyor…';
+
   let fotoB64=null;
-  if(fotoFile){ fotoB64=await _kucult(fotoFile); }   // sıkıştır → base64 (yerel sakla)
-  const govde={durum:'uygulandi',uyg_tarih:document.getElementById('shTarih').value||bugun(),
-    uyg_not:document.getElementById('shNot').value.trim(),uygulayan:kisiGetir(),
-    guncelleme:new Date().toISOString()};
-  if(g.tip==='yaprak'){ govde.uyg_kalemler=[{depo:Number((document.getElementById('shDepo')||{}).value)||0}]; }
+  if(fotoFile){ fotoB64=await _kucult(fotoFile); }
+
+  const tarihEl=document.getElementById('shTarih');
+  const govde={
+    sonuc: shSonuc,
+    sebep: shSebep||'',
+    uyg_tarih:(tarihEl&&tarihEl.value)||bugun(),
+    uyg_not:document.getElementById('shNot').value.trim(),
+    uygulayan:kisiGetir(),
+    guncelleme:new Date().toISOString()
+  };
+  govde.durum = (shSonuc==='yapilamadi') ? 'beklemede' : 'uygulandi';
+
+  if(shSonuc==='hasat'){
+    govde.uyg_kalemler=[{kasa:shSayi(shKasa),kasaKg:shSayi(shKasaKg),
+      kg:shSayi(shKasa)*shSayi(shKasaKg),parsel:shParselAd||''}];
+  } else if(shSonuc==='yapilamadi'){
+    govde.uyg_kalemler=[];
+  } else if(g.tip==='yaprak'){
+    const k={depo:shSayi(shDepo)};
+    if(shSonuc==='yarim') k.parselBiten=shSayi(shParselBiten);
+    govde.uyg_kalemler=[k];
+  } else {
+    govde.uyg_kalemler=(g.kalemler||[]).map((k,i)=>{
+      const o={urun:k.urun||'',birim:k.birim||''};
+      if(k.paket!=null) o.paket=shSayi(shMik[i]); else o.miktar=shSayi(shMik[i]);
+      return o;
+    });
+    if(shSonuc==='yarim') govde.uyg_kalemler.push({parselBiten:shSayi(shParselBiten),parselToplam:shParselTop});
+  }
+
   // 1) yerel kuyruğa ekle (anında — internet beklemeden)
   const it={id:aktifId,govde,fotoB64,bahce_id:g.bahce_id||'genel',ts:Date.now()};
   const ob=_outboxGet(); const ix=ob.findIndex(x=>x.id===aktifId); if(ix>=0)ob[ix]=it; else ob.push(it); _outboxSet(ob);
-  // 2) ekranda hemen "kaydedildi (bekliyor)" göster
+  // 2) ekranda hemen göster
   Object.assign(g,govde,{_pending:true}); _cacheSet(GOREVLER);
-  btn.disabled=false;btn.innerHTML='✅ Uygulandı olarak gönder';
+  btn.disabled=false; btn.textContent='Gönder'; btn.style.background='';
   sheetKapat(); ciz(); bannerGuncelle();
   // 3) sinyal varsa arkada gönder, yoksa kuyrukta kalır
   if(navigator.onLine){ toast('Gönderiliyor…'); senkronEt(); }
