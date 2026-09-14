@@ -3,7 +3,7 @@
    Strateji: AĞ-ÖNCELİKLİ (network-first) → internet varken her zaman güncel sürüm gelir ve
    önbellek tazelenir; internet yoksa son önbellekten açılır. Supabase istekleri hiç önbelleğe
    alınmaz (veri her zaman canlı). */
-const CACHE='nk-saha-v4';
+const CACHE='nk-saha-v5';
 const SHELL=['./saha.html','./','./manifest.webmanifest','./saha-192.png'];
 
 self.addEventListener('install',e=>{

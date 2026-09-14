@@ -158,7 +158,7 @@ const SAHA_CIFTLIK='nk_19abc7b7292b619aacb796bd6c8f';
 const HDR={apikey:SAHA_KEY,Authorization:'Bearer '+SAHA_KEY,'x-ciftlik':SAHA_CIFTLIK};
 
 // Bu sayfanın sürümü. Ekranın altında görünür — eski bir kopyayı açtığınızda anlaşılsın diye.
-const SAHA_SURUM='2026-09-13c';
+const SAHA_SURUM='2026-09-14';
 
 // Ana ekrana ekleme ipucu. Manifest artık ayrı bir dosya (manifest.webmanifest);
 // blob URL'li manifest Chrome'un kurulabilirlik şartlarını karşılamıyordu.
@@ -440,7 +440,7 @@ let shDepo=0;             // yaprak: uygulanan depo sayısı
 let shParselBiten=0;      // yarım kaldıysa biten parsel
 let shParselTop=0;
 let shSebep='';
-let shKasa=0, shKasaKg=0, shParselAd='';
+let shKasa=0, shKasaKg=0, shParselAd='', shKg=0, shFisNo='';
 
 function shSayi(v){ v=Number(v); return isFinite(v)&&v>0?v:0; }
 function shPlanMik(k){ return (k&&k.paket!=null)?Number(k.paket||0):Number((k&&k.miktar)||0); }
@@ -457,7 +457,7 @@ function uygulaAc(id){
   shParselTop = Number(g.parselSayisi||0) || 0;
   shMik = (g.kalemler||[]).map(k=>shPlanMik(k));
   shDepo = Number(g.period||0)||0;
-  shKasa=0; shKasaKg=25; shParselAd=g.parsel||'';
+  shKasa=0; shKasaKg=25; shParselAd=g.parsel||''; shKg=0; shFisNo='';
 
   document.getElementById('shBaslik').textContent = hasat?'Hasat kaydı':'İşi kapat';
   document.getElementById('shDesc').textContent='🌳 '+(g.bahce_ad||'')+' · 📅 '+fmtT(g.plan_tarih)
@@ -492,6 +492,7 @@ function shMikDegis(i,d,v){ if(v!=null){shMik[i]=shSayi(v);} else {shMik[i]=Math
 function shDepoDegis(d,v){ shDepo = (v!=null)?shSayi(v):Math.max(0,shSayi(shDepo)+d); shCiz(); }
 function shParselDegis(d,v){ shParselBiten=(v!=null)?shSayi(v):Math.max(0,shSayi(shParselBiten)+d); shCiz(); }
 function shKasaDegis(d,v){ shKasa=(v!=null)?shSayi(v):Math.max(0,shSayi(shKasa)+d); shCiz(); }
+function shKgDegis(d,v){ shKg=(v!=null)?shSayi(v):Math.max(0,shSayi(shKg)+d); shCiz(); }
 function shKasaKgDegis(d,v){ shKasaKg=(v!=null)?shSayi(v):Math.max(0,shSayi(shKasaKg)+d); shCiz(); }
 function shSonucSec(t){ shSonuc=t; if(t!=='yarim') shParselBiten=0; if(t==='tamam') shSebep=''; shCiz(); }
 function shSebepSec(x){ shSebep=(shSebep===x)?'':x; shCiz(); }
@@ -504,16 +505,27 @@ function shCiz(){
   let h='';
 
   if(shSonuc==='hasat'){
+    // Kesin rakam kantar fişinden gelir; kasa sayımı yalnız fiş yoksa kullanılır.
+    h+='<div class="fld"><label>Kantar fişi kilogramı</label>'
+      +'<div class="qrow"><div class="nm">Kilogram<small>fişte yazan rakam</small></div>'+stp(shKg,'shKgDegis',100)+'</div></div>';
+    h+='<div class="fld"><label>Fiş numarası</label>'
+      +'<input type="text" id="shFisNo" value="'+esc(shFisNo)+'" placeholder="örn: A-14027" onchange="shFisNo=this.value"></div>';
     h+='<div class="fld"><label>Parsel / yer</label>'
-      +'<input type="text" id="shParselAd" value="'+esc(shParselAd)+'" placeholder="örn: 2 numaralı parsel" oninput="shParselAd=this.value"></div>';
-    h+='<div class="fld"><label>Toplanan</label>'
-      +'<div class="qrow"><div class="nm">Kasa adedi<small>bugün toplanan</small></div>'+stp(shKasa,'shKasaDegis',10)+'</div>'
-      +'<div class="qrow"><div class="nm">Kasa ortalaması<small>kilogram</small></div>'+stp(shKasaKg,'shKasaKgDegis',1)+'</div></div>';
-    const kg=shSayi(shKasa)*shSayi(shKasaKg);
+      +'<input type="text" id="shParselAd" value="'+esc(shParselAd)+'" placeholder="örn: 2 numaralı parsel" onchange="shParselAd=this.value"></div>';
+    h+='<div class="ikinci-blok" style="border-top:1px solid #eee;margin-top:6px;padding-top:12px">'
+      +'<div class="fld"><label>Fiş henüz yoksa — kasa sayımı (tahmini)</label>'
+      +'<div class="qrow"><div class="nm">Kasa adedi</div>'+stp(shKasa,'shKasaDegis',10)+'</div>'
+      +'<div class="qrow"><div class="nm">Kasa ortalaması<small>kilogram</small></div>'+stp(shKasaKg,'shKasaKgDegis',1)+'</div></div></div>';
+    const tahminKg=shSayi(shKasa)*shSayi(shKasaKg);
+    const kesin=shSayi(shKg)>0;
+    const kg = kesin ? shSayi(shKg) : tahminKg;
     h+='<div class="hesap">Bu kayıt<span class="big">'+temizSayi(kg)+' kg</span>'
-      +'<div class="alt">'+temizSayi(shKasa)+' kasa × '+temizSayi(shKasaKg)+' kg'+(shParselAd?(' · '+esc(shParselAd)):'')+'</div></div>';
+      +'<div class="alt">'+(kesin
+          ? ('kantar fişi'+(shFisNo?(' · '+esc(shFisNo)):''))
+          : (temizSayi(shKasa)+' kasa × '+temizSayi(shKasaKg)+' kg — TAHMİNİ'))
+      +(shParselAd?(' · '+esc(shParselAd)):'')+'</div></div>';
     h+='<div class="fld"><label>Hasat tarihi</label><input type="date" id="shTarih" value="'+bugun()+'"></div>';
-    btn.textContent='🧺 Hasat kaydını gönder';
+    btn.textContent = kesin ? '🧺 Kantar fişini gönder' : '🧺 Tahmini kaydı gönder';
     btn.style.background='#C2560E';
     el.innerHTML=h; return;
   }
@@ -580,7 +592,7 @@ async function uygulamayiKaydet(){
   if(shSonuc==='yapilamadi' && !shSebep && !document.getElementById('shNot').value.trim()){
     toast('Sebep seç ya da nota yaz'); return;
   }
-  if(shSonuc==='hasat' && shSayi(shKasa)<=0){ toast('Kasa adedini gir'); return; }
+  if(shSonuc==='hasat' && shSayi(shKg)<=0 && shSayi(shKasa)<=0){ toast('Kantar kilogramını ya da kasa adedini gir'); return; }
 
   const btn=document.getElementById('shOnayla');
   btn.disabled=true; btn.innerHTML='<span class="spin"></span>Kaydediliyor…';
@@ -600,8 +612,13 @@ async function uygulamayiKaydet(){
   govde.durum = (shSonuc==='yapilamadi') ? 'beklemede' : 'uygulandi';
 
   if(shSonuc==='hasat'){
-    govde.uyg_kalemler=[{kasa:shSayi(shKasa),kasaKg:shSayi(shKasaKg),
-      kg:shSayi(shKasa)*shSayi(shKasaKg),parsel:shParselAd||''}];
+    const kesin=shSayi(shKg)>0;
+    govde.uyg_kalemler=[{
+      kg: kesin ? shSayi(shKg) : shSayi(shKasa)*shSayi(shKasaKg),
+      tahmini: !kesin,                      // kasa sayımı tahmindir; fiş gelince programda üzerine yazılır
+      fisNo: kesin ? (shFisNo||'') : '',
+      kasa: shSayi(shKasa), kasaKg: shSayi(shKasaKg),
+      parsel: shParselAd||'' }];
   } else if(shSonuc==='yapilamadi'){
     govde.uyg_kalemler=[];
   } else if(g.tip==='yaprak'){
